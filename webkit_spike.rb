@@ -41,9 +41,23 @@ class Shooter
 
   def capture(uri, path)
     # Tell the frame to load the URL we want
-    @view.mainFrame.loadRequest(OSX::NSURLRequest.requestWithURL(OSX::NSURL.URLWithString(uri)))
+    # @view.mainFrame.loadRequest(OSX::NSURLRequest.requestWithURL(OSX::NSURL.URLWithString(uri)))
     
     
+    html = %{
+      <html>
+      <body>
+      	helloz
+      	<div id="foo"/>
+      </body>
+      </html>
+
+      <script type="text/javascript">
+      document.getElementById("foo").innerHTML = "world " + new Date().toString()
+      </script>
+    }
+    url = OSX::NSURL.alloc.initWithScheme_host_path('http', 'example.com', '/')
+    @view.mainFrame.loadHTMLString_baseURL(html, url)
     
     # Run the main event loop until the frame loads
     OSX.CFRunLoopRun
@@ -57,7 +71,10 @@ class Shooter
       # bitmap = OSX::NSBitmapImageRep.alloc.initWithFocusedViewRect(view.bounds)
       view.unlockFocus
 
-      pp view.mainFrameDocument.documentElement.innerHTML.to_s
+      # pp view.mainFrame.objc_methods.sort
+      
+      
+      view.mainFrameDocument.documentElement.innerHTML.to_s
       # Write the bitmap to a file as a PNG
       # bitmap.representationUsingType_properties(OSX::NSPNGFileType, nil).writeToFile_atomically(path, true)
       #       bitmap.release
@@ -112,11 +129,11 @@ file_url = "file://#{File.expand_path("little_page.html")}"
 s = Shooter.new
 s.capture(file_url, "/tmp/google.png")
 
-# p Benchmark.realtime {
-# 100.times do
-# s.capture(file_url, "/tmp/google.png")
-# end
-# }
+p Benchmark.realtime {
+100.times do
+s.capture(file_url, "/tmp/google.png")
+end
+}
 # s.capture("http://www.google.com", "/tmp/google.png")
 # s.capture("http://www.37signals.com", "/tmp/37sig.png")
 s.release
