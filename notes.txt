@@ -16,3 +16,7 @@ Schnauzer.new do |request, response|
 end
 
 ...request and response are rack-compliant
+
+
+make all of this work: http://rack.rubyforge.org/doc/files/SPEC.html
+  ...adapt Objc url objects to rack.
