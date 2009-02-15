@@ -46,4 +46,9 @@ describe Safari do
     })
     @browser.document.innerHTML.should include(%{hello <div id="the_spot">world</div>})
   end
+  
+  it "load from url" do
+    @browser.load_url("file://#{File.expand_path("spec/little_page.html")}")
+    @browser.document.innerHTML.should include(%{hello <div id="foo">world</div>})
+  end
 end

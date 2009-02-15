@@ -34,7 +34,19 @@ class Safari
   def load_html(html, base_url="http://localhost")
     osx_base_url = OSX::NSURL.alloc.initWithString(base_url)
     @view.mainFrame.loadHTMLString_baseURL(html, osx_base_url)
-    
+    _run_load
+  end
+  
+  def load_url(url)
+    @view.mainFrame.loadRequest(
+      OSX::NSURLRequest.requestWithURL(
+        OSX::NSURL.alloc.initWithString(url)
+      )
+    )
+    _run_load
+  end
+  
+  def _run_load
     OSX.CFRunLoopRun #this blocks until the frame loads (see LoadDelegate)
 
     @view.setNeedsDisplay(true)
