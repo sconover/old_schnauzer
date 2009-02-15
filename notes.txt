@@ -1,0 +1,11 @@
+schnauzer compatability test
+  - encourage people on other browser/os combos to write schnauzer-interface-equivalent implementations
+  - good pressure here to keep schnauzer focused and simple
+  - show that ajax works, js works, visual measures work
+    - against a sample rails app
+    - requests are local
+    - the kinds of things that prove a real browser is there
+    - plus perf numbers at the end
+
+- opportunity to make webrat use it?
+  - webrat's facilities are probably limited (no assumption of js env) (look into this)
