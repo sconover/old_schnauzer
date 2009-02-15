@@ -1,5 +1,6 @@
 require "rubygems"
 require "lib/safari"
+require "benchmark"
 require "spec"
 
 describe Safari do
@@ -50,5 +51,26 @@ describe Safari do
   it "load from url" do
     @browser.load_url("file://#{File.expand_path("spec/little_page.html")}")
     @browser.document.innerHTML.should include(%{hello <div id="foo">world</div>})
+  end
+  
+  it "performance" do
+    n = 100
+    time = 
+      Benchmark.realtime {
+        n.times do
+          @browser.load_html(%{
+            <html>
+              <body>
+              	hello <div id="the_spot"></div>
+        	
+              	<script type="text/javascript">
+                	document.getElementById('the_spot').innerHTML='world'
+              	</script>
+              </body>
+            </html>
+          })
+        end
+      }
+    puts "#{n} requests in #{time}s  #{(time*1000)/n}ms/r  #{n.to_f/time.to_f}r/s"
   end
 end
