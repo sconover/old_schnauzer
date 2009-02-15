@@ -19,7 +19,6 @@ class LocalProtocol < OSX::NSURLProtocol
   end
   
   def startLoading
-    
     response_body = @@request_handler.call(request.URL.relativePath.to_s)
     
     response = OSX::NSURLResponse \

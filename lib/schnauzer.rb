@@ -1,12 +1,17 @@
 require 'osx/cocoa'
 require 'lib/cocoa_utils'
+require "lib/local_protocol"
 
 OSX.require_framework 'WebKit'
 
 
 class Schnauzer
   
-  def initialize(width=1024, height=768)
+  def self.unload_request_handler
+    OSX::NSURLProtocol.unregisterClass(LocalProtocol) 
+  end
+  
+  def initialize(width=1024, height=768, &block)
     OSX.NSApplicationLoad
     
     @window = OSX::NSWindow.alloc.initWithContentRect_styleMask_backing_defer(
@@ -25,6 +30,13 @@ class Schnauzer
     # Replace the window's content @view with the web @view
     @window.setContentView(@view)
     @view.release
+    
+    
+    if block
+      Schnauzer.unload_request_handler
+      OSX::NSURLProtocol.registerClass(LocalProtocol) 
+      LocalProtocol.request_handler = block
+    end
   end
   
   def load_html(html, base_url="http://localhost")

@@ -73,6 +73,6 @@ describe Schnauzer do
           })
         end
       }
-    puts "#{n} requests in #{time}s  #{(time*1000)/n}ms/r  #{n.to_f/time.to_f}r/s"
+    puts "basic html load: #{n} requests in #{time}s  #{(time*1000)/n}ms/r  #{n.to_f/time.to_f}r/s"
   end
 end
