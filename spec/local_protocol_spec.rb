@@ -20,6 +20,6 @@ describe LocalProtocol do
     
     OSX::NSURLProtocol.registerClass(LocalProtocol)
     
-    CocoaUtils.url_get("file://foo").should == "<a>hello</a>"
+    CocoaUtils.url_get("local://local/fooZZZ").should == "<a>hello /fooZZZ</a>"
   end
 end

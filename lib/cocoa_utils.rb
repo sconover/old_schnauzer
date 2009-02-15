@@ -18,15 +18,7 @@ class CocoaUtils
         delegate
       )
     
-    CocoaUtils.describe(conn)
-    
     OSX.CFRunLoopRun
-    # conn.start
-    # conn.start
-    # response = OSX::NSURLConnection.sendSynchronousRequest_returningResponse_error(url_request, url_response, nil)
-    # str = "." * response.length
-    # response.getBytes_length(str)
-    # str
     delegate.body
   end
   
@@ -66,8 +58,7 @@ class ConnectionDelegate < OSX::NSObject
     p 3
   end
   
-  def connection_didReceiveResponse(*args)
-    p args
+  def connection_didReceiveResponse(connection, response)
     p 4
   end
   

@@ -5,77 +5,37 @@ OSX.require_framework 'WebKit'
 class LocalProtocol < OSX::NSURLProtocol
 
   objc_class_method(:canInitWithRequest_, '@:@@')
-  def self.canInitWithRequest(ns_url_request)
-    p" canInitWithRequest"
-    0
+  def self.canInitWithRequest(request)
+    request.URL.scheme == "local" ? 0 : 1
   end
   
   objc_class_method(:canonicalRequestForRequest_, '@:@@') 
   def self.canonicalRequestForRequest(ns_url_request)
-    p"canonicalRequestForRequest #{ns_url_request.inspect}"
-    CocoaUtils.describe(ns_url_request)
     ns_url_request
   end
   
   def startLoading
-    p "startLoading"
-    CocoaUtils.describe(self.client)
+    
+    response_body = "<a>hello #{request.URL.relativePath.to_s}</a>"
     
     response = OSX::NSURLResponse \
                 .alloc \
                 .initWithURL_MIMEType_expectedContentLength_textEncodingName(
                   request.URL,
                   "text/html".to_ns,
-                  "<a>hello</a>".length,
+                  response_body.length,
                   nil
                 )
     
     self.client.URLProtocol_didReceiveResponse_cacheStoragePolicy(self, response, nil)
-    data = OSX::NSData.alloc.initWithBytes_length("<a>hello</a>")
-    # data = OSX::NSData.dataWithBytes_length("<a>hello</a>".to_a, "<a>hello</a>".length)
-    CocoaUtils.describe(data)
-    # data.bytes("<a>hello</a>".to_a)
+    data = OSX::NSData.alloc.initWithBytes_length(response_body)
     self.client.URLProtocol_didLoadData(self, data)
     self.client.URLProtocolDidFinishLoading(self)
     response.release
-      # 
-      #         /* create the response record, set the mime type to jpeg */
-      # NSURLResponse *response = 
-      #   [[NSURLResponse alloc] initWithURL:[request URL] 
-      #     MIMEType:@"image/jpeg" 
-      #     expectedContentLength:-1 
-      #     textEncodingName:nil];
-      # 
-      #   /* get a reference to the client so we can hand off the data */
-      #     id<NSURLProtocolClient> client = [self client];
-      # 
-      #   /* turn off caching for this response data */ 
-      # [client URLProtocol:self didReceiveResponse:response
-      #     cacheStoragePolicy:NSURLCacheStorageNotAllowed];
-      # 
-      #   /* set the data in the response to our jfif data */ 
-      # [client URLProtocol:self didLoadData:data];
-      # 
-      #   /* notify that we completed loading */
-      # [client URLProtocolDidFinishLoading:self];
-      # 
-      #   /* we can release our copy */
-      # [response release];
-      #   
-    
-    
-    
-    
-    
-    
-    
-    
-    
   end
   
   def stopLoading
-    p "stopLoading"
-    # p self.request
+    # p "stopLoading"
   end
   
 end
