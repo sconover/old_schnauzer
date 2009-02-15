@@ -9,3 +9,10 @@ schnauzer compatability test
 
 - opportunity to make webrat use it?
   - webrat's facilities are probably limited (no assumption of js env) (look into this)
+
+
+Schnauzer.new do |request, response|
+  #handle the request, write to the response
+end
+
+...request and response are rack-compliant
