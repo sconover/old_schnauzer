@@ -10,13 +10,17 @@ class LocalProtocol < OSX::NSURLProtocol
   end
   
   objc_class_method(:canonicalRequestForRequest_, '@:@@') 
-  def self.canonicalRequestForRequest(ns_url_request)
-    ns_url_request
+  def self.canonicalRequestForRequest(request)
+    request
+  end
+  
+  def self.request_handler=(block)
+    @@request_handler = block
   end
   
   def startLoading
     
-    response_body = "<a>hello #{request.URL.relativePath.to_s}</a>"
+    response_body = @@request_handler.call(request.URL.relativePath.to_s)
     
     response = OSX::NSURLResponse \
                 .alloc \
@@ -38,21 +42,4 @@ class LocalProtocol < OSX::NSURLProtocol
     # p "stopLoading"
   end
   
-end
-
-class LocalProtocolClient < OSX::NSObject
-  CocoaUtils.setup_generic_instance_methods(
-    self, [
-      :URLProtocol_cachedResponseIsValid,
-      :URLProtocol_didCancelAuthenticationChallenge,
-      :URLProtocol_didFailWithError,
-      :URLProtocol_didLoadData,
-      :URLProtocol_didReceiveAuthenticationChallenge,
-      :URLProtocol_didReceiveResponse_cacheStoragePolicy,
-      :URLProtocol_wasRedirectedToRequest_redirectResponse,
-      :URLProtocolDidFinishLoading
-    ]
-  )
-    
-
 end

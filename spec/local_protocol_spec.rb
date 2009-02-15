@@ -6,19 +6,10 @@ require "pp"
 
 describe LocalProtocol do
   it "loads resources locally" do
-
-    
-    
-    # protocol = LocalProtocol.new(proc {|request| "<a>hello</a>" })
-    # CocoaUtils.describe(LocalProtocol)
-    # protocol = LocalProtocol.alloc
-    # CocoaUtils.describe(protocol)
-    # p protocol.request
-    # protocol.startLoading
-    
-    # CocoaUtils.describe(protocol)
-    
     OSX::NSURLProtocol.registerClass(LocalProtocol)
+    LocalProtocol.request_handler = proc do |url_path|
+      "<a>hello #{url_path}</a>"
+    end
     
     CocoaUtils.url_get("local://local/fooZZZ").should == "<a>hello /fooZZZ</a>"
   end
