@@ -6,7 +6,7 @@ class LocalProtocol < OSX::NSURLProtocol
 
   objc_class_method(:canInitWithRequest_, '@:@@')
   def self.canInitWithRequest(request)
-    request.URL.scheme == "local" ? 0 : 1
+    0
   end
   
   objc_class_method(:canonicalRequestForRequest_, '@:@@') 
@@ -40,5 +40,10 @@ class LocalProtocol < OSX::NSURLProtocol
   def stopLoading
     # p "stopLoading"
   end
+  
+  # def method_missing(name_sym, *args)
+  #   p name_sym
+  #   self.objc_send(name_sym, args)
+  # end
   
 end

@@ -20,5 +20,6 @@ describe LocalProtocol do
     end
     
     CocoaUtils.url_get("local://local/fooZZZ").should == "<a>hello /fooZZZ</a>"
+    # CocoaUtils.url_get("local://local/foo?a=b").should == "<a>hello /foo?a=b</a>"
   end
 end
