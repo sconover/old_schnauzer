@@ -1,11 +1,11 @@
 require "rubygems"
-require "lib/safari"
+require "lib/schnauzer"
 require "benchmark"
 require "spec"
 
-describe Safari do
+describe Schnauzer do
   before do
-    @browser = Safari.new
+    @browser = Schnauzer.new
   end
   
   it "loads and displays html" do

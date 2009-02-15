@@ -4,7 +4,7 @@ require 'lib/cocoa_utils'
 OSX.require_framework 'WebKit'
 
 
-class Safari
+class Schnauzer
   
   def initialize(width=1024, height=768)
     OSX.NSApplicationLoad
