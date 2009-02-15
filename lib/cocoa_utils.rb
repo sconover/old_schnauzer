@@ -11,11 +11,11 @@ class CocoaUtils
     url_request = OSX::NSURLRequest.requestWithURL(url)
     url_response = OSX::NSURLResponse.alloc
     
-    
+    delegate = ConnectionDelegate.alloc.init
     conn = 
       OSX::NSURLConnection.connectionWithRequest_delegate(
         url_request, 
-        ConnectionDelegate.alloc.init
+        delegate
       )
     
     CocoaUtils.describe(conn)
@@ -27,7 +27,7 @@ class CocoaUtils
     # str = "." * response.length
     # response.getBytes_length(str)
     # str
-    "foo"
+    delegate.body
   end
   
   def self.setup_generic_instance_methods(klass, objc_methods_symbols)
@@ -46,6 +46,8 @@ class CocoaUtils
 end
 
 class ConnectionDelegate < OSX::NSObject
+  attr_reader :body
+  
   def connection_didFailWithError
     puts "hi"
   end
@@ -59,7 +61,8 @@ class ConnectionDelegate < OSX::NSObject
   end  
     
 
-  def connection_willCacheResponse
+  def connection_willCacheResponse(*args)
+    p args
     p 3
   end
   
@@ -68,8 +71,8 @@ class ConnectionDelegate < OSX::NSObject
     p 4
   end
   
-  def connection_didReceiveData
-    p 5
+  def connection_didReceiveData(connection, data)
+    @body = data.rubyString
   end
   
   def connection_willSendRequest_redirectResponse

@@ -11,12 +11,12 @@ describe LocalProtocol do
     
     # protocol = LocalProtocol.new(proc {|request| "<a>hello</a>" })
     # CocoaUtils.describe(LocalProtocol)
-    protocol = LocalProtocol.alloc
-    CocoaUtils.describe(protocol)
+    # protocol = LocalProtocol.alloc
+    # CocoaUtils.describe(protocol)
     # p protocol.request
     # protocol.startLoading
     
-    CocoaUtils.describe(protocol)
+    # CocoaUtils.describe(protocol)
     
     OSX::NSURLProtocol.registerClass(LocalProtocol)
     

@@ -26,11 +26,16 @@ class LocalProtocol < OSX::NSURLProtocol
                 .initWithURL_MIMEType_expectedContentLength_textEncodingName(
                   request.URL,
                   "text/html".to_ns,
-                  0,
+                  "<a>hello</a>".length,
                   nil
                 )
     
     self.client.URLProtocol_didReceiveResponse_cacheStoragePolicy(self, response, nil)
+    data = OSX::NSData.alloc.initWithBytes_length("<a>hello</a>")
+    # data = OSX::NSData.dataWithBytes_length("<a>hello</a>".to_a, "<a>hello</a>".length)
+    CocoaUtils.describe(data)
+    # data.bytes("<a>hello</a>".to_a)
+    self.client.URLProtocol_didLoadData(self, data)
     self.client.URLProtocolDidFinishLoading(self)
     response.release
       # 
