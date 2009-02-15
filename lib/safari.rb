@@ -6,8 +6,6 @@ OSX.require_framework 'WebKit'
 
 class Safari
   
-  attr_reader :document
-  
   def initialize(width=1024, height=768)
     OSX.NSApplicationLoad
     
@@ -27,8 +25,6 @@ class Safari
     # Replace the window's content @view with the web @view
     @window.setContentView(@view)
     @view.release
-    
-    @document = nil
   end
   
   def load_html(html, base_url="http://localhost")
@@ -49,12 +45,15 @@ class Safari
   def _run_load
     OSX.CFRunLoopRun #this blocks until the frame loads (see LoadDelegate)
 
-    @view.setNeedsDisplay(true)
-    @view.displayIfNeeded
-    @view.lockFocus
-    @view.unlockFocus
-    
-    @document = @view.mainFrameDocument.documentElement
+    # @view.setNeedsDisplay(true)
+    # @view.displayIfNeeded
+    # @view.lockFocus
+    # @view.unlockFocus
+  end
+  
+  def js(str)
+    result = @view.mainFrameDocument.evaluateWebScript(str)
+    result.is_a?(OSX::NSCFString) ? result.to_s : result
   end
 end
 
