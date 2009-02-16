@@ -23,12 +23,12 @@ describe "schnauzer + sinatra app" do
   
   it "session works on its own (sanity check)" do
     @harness.get("/foo/hi")    
-    @harness.response.body.should == "hi I'm a rails app"
+    @harness.response.body.should == "hi I'm a web app"
   end
   
   it "same thing but with schnauzer (using the session object to request)" do
     @browser.load_url("local://host/foo/hi")
-    @browser.js("document.body.innerHTML").should include("hi I'm a rails app")
+    @browser.js("document.body.innerHTML").should include("hi I'm a web app")
   end
   
   it "basic ajax works" do

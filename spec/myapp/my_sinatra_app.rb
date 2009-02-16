@@ -4,7 +4,7 @@ require "sinatra"
 set :public, File.dirname(__FILE__) + '/public'
 
 get '/foo/hi' do
-  "hi I'm a rails app"
+  "hi I'm a web app"
 end
 
 get '/echo/:to_echo' do
