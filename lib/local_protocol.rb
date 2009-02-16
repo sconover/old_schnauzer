@@ -20,10 +20,6 @@ class LocalProtocol < OSX::NSURLProtocol
   end
   
   def startLoading
-    # .URL.relativePath.to_s
-    
-    
-    
     rack_response = CocoaToRackResponseAdapter.new(request, self)
     
     @@block.call(
@@ -32,30 +28,11 @@ class LocalProtocol < OSX::NSURLProtocol
     )
     
     rack_response.send_via_cocoa
-    # response = OSX::NSURLResponse \
-    #                 .alloc \
-    #                 .initWithURL_MIMEType_expectedContentLength_textEncodingName(
-    #                   request.URL,
-    #                   "text/html".to_ns,
-    #                   response_body.length,
-    #                   nil
-    #                 )
-    
-    # self.client.URLProtocol_didReceiveResponse_cacheStoragePolicy(self, response, nil)
-    # data = OSX::NSData.alloc.initWithBytes_length(response_body)
-    # self.client.URLProtocol_didLoadData(self, data)
-    # self.client.URLProtocolDidFinishLoading(self)
-    # response.release
   end
   
   def stopLoading
     # p "stopLoading"
   end
-  
-  # def method_missing(name_sym, *args)
-  #   p name_sym
-  #   self.objc_send(name_sym, args)
-  # end
   
 end
 
@@ -114,18 +91,6 @@ class CocoaToRackResponseAdapter < Rack::Response
     # @status, @body = 200, []
     # @header = Rack::Utils::HeaderHash.new({'Content-Type' => 'text/html'})
   end
-
-  # def write(str)
-    # @body << str.to_s
-    # str
-  # end
-
-  # def finish(&block)
-  #   super
-  #   
-  #   
-  # end
-  
   
   def send_via_cocoa
     ns_url_response = OSX::NSHTTPURLResponse.alloc
@@ -148,19 +113,5 @@ class CocoaToRackResponseAdapter < Rack::Response
     ns_url_response.release
 
   end
-  # def finish
-    # @body = block if block_given?
-    # if [204, 304].include?(status.to_i)
-    #   header.delete "Content-Type"
-    #   [status.to_i, header.to_hash, []]
-    # else
-    #   body = @body || []
-    #   body = [body] if body.respond_to? :to_str
-    #   if header["Content-Length"].nil? && body.respond_to?(:to_ary)
-    #     header["Content-Length"] = body.to_ary.
-    #       inject(0) { |len, part| len + part.length }.to_s
-    #   end
-    #   [status.to_i, header.to_hash, body]
-    # end
-  # end
+
 end
