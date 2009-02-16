@@ -2,6 +2,7 @@ require 'osx/cocoa'
 require 'lib/cocoa_utils'
 require "lib/local_protocol"
 
+
 OSX.require_framework 'WebKit'
 
 
@@ -74,6 +75,8 @@ class Schnauzer
     result
   end
 end
+
+
 
 class WebResourceLoadDelegate < OSX::NSObject
   

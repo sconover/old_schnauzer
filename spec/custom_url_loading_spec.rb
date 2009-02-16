@@ -5,12 +5,14 @@ require "spec"
 
 describe Schnauzer do
   it "loads urls my way" do
-    browser = Schnauzer.new do |url|
-      %{<html>
-          <body>
-          	<i>hello #{url}</i>
-          </body>
-        </html>}
+    browser = Schnauzer.new do |request, response|
+      response.write(
+        %{<html>
+            <body>
+            	<i>hello #{request.fullpath}</i>
+            </body>
+          </html>}
+      )
     end
     
     browser.load_url("local://host/custom/page")
@@ -19,30 +21,32 @@ describe Schnauzer do
   end
 
   it "url references within documents get loaded my way too" do
-    browser = Schnauzer.new do |url|
-      if url == "/main/page"
-        %{<html>
-            <link rel="stylesheet" type="text/css" href="/some.css"/>
+    browser = Schnauzer.new do |request, response|
+      html =
+        if request.fullpath == "/main/page"
+          %{<html>
+              <link rel="stylesheet" type="text/css" href="/some.css"/>
             
 
-            <body>
-            	<i>hello #{url}</i>
-            	<div id="spot"></div>
-            </body>
+              <body>
+              	<i>hello #{request.fullpath}</i>
+              	<div id="spot"></div>
+              </body>
             
-            <script type="text/javascript" language="JavaScript" src="/some.js"></script>
-          </html>}
-      elsif url == "/some.css"
-        %{
-          body {
-            margin: 23px;
+              <script type="text/javascript" language="JavaScript" src="/some.js"></script>
+            </html>}
+        elsif request.fullpath == "/some.css"
+          %{
+            body {
+              margin: 23px;
+            }
           }
-        }
-      elsif url == "/some.js"
-        %{
-          document.getElementById("spot").innerHTML = "john jay"
-        }
-      end
+        elsif request.fullpath == "/some.js"
+          %{
+            document.getElementById("spot").innerHTML = "john jay"
+          }
+        end
+      response.write(html)
     end
     
     browser.load_url("local://host/main/page")
@@ -54,10 +58,10 @@ describe Schnauzer do
 
     
   it "performance" do
-    browser = Schnauzer.new do |url|
+    browser = Schnauzer.new do |request, response|
       %{<html>
           <body>
-          	<i>hello #{url}</i>
+          	<i>hello #{request.fullpath}</i>
           </body>
         </html>}
     end
@@ -73,30 +77,32 @@ describe Schnauzer do
 
 
 
-    browser = Schnauzer.new do |url|
-      if url == "/main/page"
-        %{<html>
-            <link rel="stylesheet" type="text/css" href="/some.css"/>
+    browser = Schnauzer.new do |request, response|
+      html =
+        if request.fullpath == "/main/page"
+          %{<html>
+              <link rel="stylesheet" type="text/css" href="/some.css"/>
             
 
-            <body>
-            	<i>hello #{url}</i>
-            	<div id="spot"></div>
-            </body>
+              <body>
+              	<i>hello #{request.fullpath}</i>
+              	<div id="spot"></div>
+              </body>
             
-            <script type="text/javascript" language="JavaScript" src="/some.js"></script>
-          </html>}
-      elsif url == "/some.css"
-        %{
-          body {
-            margin: 23px;
+              <script type="text/javascript" language="JavaScript" src="/some.js"></script>
+            </html>}
+        elsif request.fullpath == "/some.css"
+          %{
+            body {
+              margin: 23px;
+            }
           }
-        }
-      elsif url == "/some.js"
-        %{
-          document.getElementById("spot").innerHTML = "john jay"
-        }
-      end
+        elsif request.fullpath == "/some.js"
+          %{
+            document.getElementById("spot").innerHTML = "john jay"
+          }
+        end
+      response.write(html)
     end
     
     n = 100

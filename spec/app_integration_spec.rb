@@ -10,9 +10,9 @@ require "spec"
 describe "schnauzer + sinatra app" do
   before(:all) do
     harness = Sinatra::TestHarness.new
-    @browser = Schnauzer.new do |url|
-                 harness.get(url)
-                 harness.response.body
+    @browser = Schnauzer.new do |request, response|
+                 harness.get(request.fullpath)
+                 response.write(harness.response.body)
                end
     @harness = harness
   end

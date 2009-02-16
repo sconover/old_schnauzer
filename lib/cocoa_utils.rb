@@ -7,28 +7,34 @@ class CocoaUtils
   end
   
   def self.url_get(url_str)
-    url = OSX::NSURL.alloc.initWithString(url_str)
-    url_request = OSX::NSURLRequest.requestWithURL(url)
+    begin
+      url = OSX::NSURL.alloc.initWithString(url_str)
+      url_request = OSX::NSMutableURLRequest.requestWithURL(url)
     
-    delegate = ConnectionDelegate.alloc
-    conn = 
-      OSX::NSURLConnection.connectionWithRequest_delegate(
-        url_request, 
-        delegate
-      )
+      delegate = ConnectionDelegate.alloc
+      conn = 
+        OSX::NSURLConnection.connectionWithRequest_delegate(
+          url_request, 
+          delegate
+        )
     
-    OSX.CFRunLoopRun
-    delegate.body
+      OSX.CFRunLoopRun
+      delegate
+    ensure
+      OSX.CFRunLoopStop(OSX.CFRunLoopGetCurrent)
+    end
   end
 end
 
 class ConnectionDelegate < OSX::NSObject
-  attr_reader :body
+  attr_reader :body, :response, :connection
   
   def connection_willCacheResponse(*args)
   end
   
   def connection_didReceiveResponse(connection, response)
+    @connection = connection
+    @response = response
   end
   
   def connection_didReceiveData(connection, data)

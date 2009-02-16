@@ -1,22 +1,19 @@
-schnauzer compatability test
-  - encourage people on other browser/os combos to write schnauzer-interface-equivalent implementations
-  - good pressure here to keep schnauzer focused and simple
-  - show that ajax works, js works, visual measures work
-    - against a sample rails app
-    - requests are local
-    - the kinds of things that prove a real browser is there
-    - plus perf numbers at the end
 
-- opportunity to make webrat use it?
-  - webrat's facilities are probably limited (no assumption of js env) (look into this)
+rack request/response
+	Schnauzer.new do |request, response|
+	  #handle the request, write to the response
+	end
+
+	...request and response are rack-compliant
 
 
-Schnauzer.new do |request, response|
-  #handle the request, write to the response
-end
-
-...request and response are rack-compliant
+	make all of this work: http://rack.rubyforge.org/doc/files/SPEC.html
+	  ...adapt Objc url objects to rack.
 
 
-make all of this work: http://rack.rubyforge.org/doc/files/SPEC.html
-  ...adapt Objc url objects to rack.
+assert failures 
+  ...things need to fail well, be visible
+
+
+
+need to dealloc.  lots of lurking memory issues.
