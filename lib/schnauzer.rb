@@ -24,8 +24,10 @@ class Schnauzer
     
     # @view.mainFrame.frameView.setAllowsScrolling(false)
     
-    @delegate = LoadDelegate.alloc.init
-    @view.setFrameLoadDelegate(@delegate)
+    @view.setFrameLoadDelegate(WebFrameLoadDelegate.alloc.init)
+
+    @resource_load_delegate = WebResourceLoadDelegate.alloc.init
+    @view.setResourceLoadDelegate(@resource_load_delegate)
 
     # Replace the window's content @view with the web @view
     @window.setContentView(@view)
@@ -65,11 +67,76 @@ class Schnauzer
   
   def js(str)
     result = @view.mainFrameDocument.evaluateWebScript(str)
-    result.is_a?(OSX::NSCFString) ? result.to_s : result
+    result = result.is_a?(OSX::NSCFString) ? result.to_s : result
+    
+    @resource_load_delegate.resolve_ajax_if_necessary
+    
+    result
   end
 end
 
-class LoadDelegate < OSX::NSObject
+class WebResourceLoadDelegate < OSX::NSObject
+  
+  def unserolved_ajax_request?
+    @unresolved_ajax_request
+  end
+  
+  def resolve_ajax_if_necessary
+    OSX.CFRunLoopRun if @unresolved_ajax_request
+  end
+  
+  def xwebView_identifierForInitialRequest_fromDataSource(v, request, source)
+    
+  end
+  
+  def webView_resource_willSendRequest_redirectResponse_fromDataSource(v, resource, request, response, source)
+    # puts "webView_resource_willSendRequest_redirectResponse_fromDataSource #{request.URL.to_s}"
+
+    request_headers = request.allHTTPHeaderFields.to_hash
+    if request_headers.values.collect{|v|v.to_s}.include?("XMLHttpRequest")
+      @unresolved_ajax_request = true
+    end
+    
+    request
+  end
+  
+  def webView_resource_didFinishLoadingFromDataSource(v, resource, source)
+    # puts "webView_resource_didFinishLoadingFromDataSource uar=#{@unresolved_ajax_request}"
+    
+    if @unresolved_ajax_request
+      @unresolved_ajax_request = false
+      OSX.CFRunLoopStop(OSX.CFRunLoopGetCurrent)
+    end
+  end
+  
+  def webView_resource_didReceiveResponse_fromDataSource(v, resource, response, source)
+    # puts "webView_resource_didReceiveResponse_fromDataSource  #{response.URL.to_s}"
+  end
+  
+  def webView_resource_didReceiveContentLength_fromDataSource(v, resource, length, source)
+    # puts "webView_resource_didReceiveContentLength_fromDataSource  #{length}"
+  end
+  
+  def webView_resource_didFailLoadingWithError_fromDataSource(v, resource, error, source)
+    # p 6
+  end
+  
+  def webView_plugInFailedWithError_dataSource(v, error, source)
+    # p 7
+  end
+  
+  def webView_resource_didReceiveAuthenticationChallenge_fromDataSource(v, resource, challenge, source)
+    # p 8
+  end
+  
+  def webView_resource_didCancelAuthenticationChallenge_fromDataSource(v, resource, challenge, source)
+    # p 9
+  end
+  
+
+end
+
+class WebFrameLoadDelegate < OSX::NSObject
 
   def webView_didFinishLoadForFrame(sender, frame)
     OSX.CFRunLoopStop(OSX.CFRunLoopGetCurrent)
@@ -82,5 +149,40 @@ class LoadDelegate < OSX::NSObject
   def webView_didFailProvisionalLoadWithError_forFrame(webview, load_error, frame)
     OSX.CFRunLoopStop(OSX.CFRunLoopGetCurrent)
   end
+
+
+
+  def webView_didStartProvisionalLoadForFrame(v, frame)
+  end
+  
+  def webView_didCommitLoadForFrame(v, frame)
+  end
+  
+  def webView_willCloseFrame(v, frame)
+  end
+  
+  def webView_didChangeLocationWithinPageForFrame(v, frame)
+  end
+  
+  def webView_didReceiveTitle_forFrame(v, title, frame)
+  end
+  
+  def webView_didReceiveIcon_forFrame(v, icon, frame)
+  end
+  
+  def webView_didCancelClientRedirectForFrame(v, frame)
+  end
+  
+  def webView_willPerformClientRedirectToURL_delay_fireDate_forFrame(v, url, delay, fire_date, frame)
+  end
+  
+  def webView_didReceiveServerRedirectForProvisionalLoadForFrame(v, frame)
+  end
+  
+  def webView_didClearWindowObject_forFrame(v, window, frame)
+  end
+    
+
+
 
 end

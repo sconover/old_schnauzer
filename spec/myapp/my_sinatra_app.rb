@@ -8,7 +8,6 @@ get '/foo/hi' do
 end
 
 get '/echo/:to_echo' do
-  p "in echo"
   "#{params[:to_echo]}, echoed back"
 end
 
@@ -25,7 +24,8 @@ get '/ajax' do
             new Ajax.Request(
                 "/echo/" + str,
                 {method: 'get',
-                 onComplete: function(result){document.getElementById("message").innerHTML = result.responseText}}
+                 onComplete: function(result){document.getElementById("message").innerHTML = result.responseText},
+                 onFailure: function(){document.getElementById("message").innerHTML = "failed"}}
             )
           }
         </script>

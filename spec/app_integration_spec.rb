@@ -7,7 +7,7 @@ require "spec"
 
 
 
-describe "schnauzer + rails" do
+describe "schnauzer + sinatra app" do
   before(:all) do
     harness = Sinatra::TestHarness.new
     @browser = Schnauzer.new do |url|
@@ -31,11 +31,10 @@ describe "schnauzer + rails" do
     @browser.js("document.body.innerHTML").should include("hi I'm a rails app")
   end
   
-  xit "ajax works" do
+  it "basic ajax works" do
     @browser.load_url("local://host/ajax")
     @browser.js("document.body.innerHTML").should include("hi I do ajax")
     @browser.js("document.getElementById('ajax_button').onclick()")
-    sleep 1
     @browser.js("document.body.innerHTML").should include(%{message goes here:<div id="message">peter_rabbit, echoed back</div>})
   end
 
