@@ -7,11 +7,13 @@ describe Schnauzer do
   it "loads urls my way" do
     browser = Schnauzer.new do |request, response|
       response.write(
-        %{<html>
+        (<<-HTML)
+          <html>
             <body>
             	<i>hello #{request.fullpath}</i>
             </body>
-          </html>}
+          </html>
+        HTML
       )
     end
     
@@ -24,7 +26,8 @@ describe Schnauzer do
     browser = Schnauzer.new do |request, response|
       html =
         if request.fullpath == "/main/page"
-          %{<html>
+          (<<-HTML)
+            <html>
               <link rel="stylesheet" type="text/css" href="/some.css"/>
             
 
@@ -34,7 +37,8 @@ describe Schnauzer do
               </body>
             
               <script type="text/javascript" language="JavaScript" src="/some.js"></script>
-            </html>}
+            </html>
+          HTML
         elsif request.fullpath == "/some.css"
           %{
             body {
@@ -59,11 +63,13 @@ describe Schnauzer do
     
   it "performance" do
     browser = Schnauzer.new do |request, response|
-      %{<html>
+      (<<-HTML)
+        <html>
           <body>
           	<i>hello #{request.fullpath}</i>
           </body>
-        </html>}
+        </html>
+      HTML
     end
     
     n = 100
@@ -80,7 +86,8 @@ describe Schnauzer do
     browser = Schnauzer.new do |request, response|
       html =
         if request.fullpath == "/main/page"
-          %{<html>
+          (<<-HTML)
+            <html>
               <link rel="stylesheet" type="text/css" href="/some.css"/>
             
 
@@ -90,7 +97,8 @@ describe Schnauzer do
               </body>
             
               <script type="text/javascript" language="JavaScript" src="/some.js"></script>
-            </html>}
+            </html>
+          HTML
         elsif request.fullpath == "/some.css"
           %{
             body {

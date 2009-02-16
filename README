@@ -1,0 +1,130 @@
+= Schnauzer 
+
+- It's a real Safari browser in ruby.
+- You can provide your own url request/response handling.
+- It's fast.
+
+
+== > Load a page that has some javascript
+
+	browser = Schnauzer.new
+    browser.load_html(%{ 
+      <html>
+        <body>
+        	hello <div id="the_spot"></div>
+        	
+        	<script type="text/javascript">
+	          	document.getElementById('the_spot').innerHTML='world'
+        	</script>
+        </body>
+      </html>
+    })
+    
+    browser.js("document.body.innerHTML") \
+      .should include(%{hello <div id="the_spot">world</div>})
+
+
+== > Provide your own url handling.  Load other resources like js and css files (schnauzer is a real browser, so this just works).
+	
+	browser = Schnauzer.new do |request, response|
+      html =
+        if request.fullpath == "/main/page"
+          %{<html>
+              <link rel="stylesheet" type="text/css" href="/some.css"/>
+            
+
+              <body>
+              	<i>hello #{request.fullpath}</i>
+              	<div id="spot"></div>
+              </body>
+            
+              <script type="text/javascript" language="JavaScript" src="/some.js"></script>
+            </html>}
+        elsif request.fullpath == "/some.css"
+          %{
+            body {
+              margin: 23px;
+            }
+          }
+        elsif request.fullpath == "/some.js"
+          %{
+            document.getElementById("spot").innerHTML = "john jay"
+          }
+        end
+      response.write(html)
+    end
+    
+    browser.load_url("local://host/main/page")
+    
+    browser.js("document.body.innerHTML").should include("<i>hello /main/page</i>")
+    browser.js("document.body.innerHTML").should include("<div id=\"spot\">john jay</div>")
+    browser.js("window.getComputedStyle(document.body, null).marginLeft").should == "23px"
+
+
+== > Ajax
+
+    app = 
+      Sinatra.new do
+        set :static, true
+        set :public, "spec/myapp/public"
+        
+        get '/foo/hi' do
+          "hi I'm a web app"
+        end
+
+        get '/echo/:to_echo' do
+          "#{params[:to_echo]}, echoed back"
+        end
+
+
+        get '/ajax_page' do
+          (<<-HTML)
+            <html>
+              <head>
+                <script type="text/javascript" language="JavaScript" src="/prototype.js"></script>
+                <script type="text/javascript">
+                  function doEcho(str) {
+                    $('message').innerHTML = "echoing " + str
+                    new Ajax.Request(
+                        "/echo/" + str,
+                        {method: 'get',
+                         onComplete: function(result){document.getElementById("message").innerHTML = result.responseText},
+                         onFailure: function(){document.getElementById("message").innerHTML = "failed"}}
+                    )
+                  }
+                </script>
+        
+              </head>
+              <body>
+                hi I do ajax
+                <button id="ajax_button" onclick="doEcho('peter_rabbit')">click me to do ajax</button>
+                message goes here:<div id="message"></div>
+              </body>
+            </html>
+          HTML
+        end
+      end
+    
+    harness = Sinatra::TestHarness.new(app)
+    browser = Schnauzer.new do |request, response|
+                harness.get(request.fullpath)
+                response.write(harness.response.body)
+              end
+
+    browser.load_url("local://host/ajax_page")
+    browser.js("document.body.innerHTML").should include("hi I do ajax")
+    
+    browser.js("document.getElementById('ajax_button').onclick()")
+    browser.js("document.body.innerHTML").should include(%{message goes here:<div id="message">peter_rabbit, echoed back</div>})
+
+    browser.js("doEcho('flopsy')")
+    browser.js("document.body.innerHTML").should include(%{message goes here:<div id="message">flopsy, echoed back</div>})
+
+
+
+== License
+
+Copyright (C) 2007, 2008 Steve Conover
+
+Schnauzer is freely distributable under the terms of an MIT-style license.
+See LICENSE or http://www.opensource.org/licenses/mit-license.php.

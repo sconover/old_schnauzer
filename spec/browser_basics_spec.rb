@@ -9,13 +9,15 @@ describe Schnauzer do
   end
   
   it "loads and displays html" do
-    @browser.load_html(%{
+    @browser.load_html(
+      (<<-HTML)
       <html>
         <body>
         	<i>hello world</i>
         </body>
       </html>
-    })
+      HTML
+    )
 
     @browser.js("document.body.innerHTML").should include("<i>hello world</i>")
   end
@@ -26,15 +28,16 @@ describe Schnauzer do
         <body>
         	<a id="mylink" href="/mypage.html">linky</a>
         </body>
-      </html>
-    }, "http://bar")
+      </html>}, 
+      "http://bar")
     
     
     @browser.js("document.getElementById('mylink').href").should == "http://bar/mypage.html"
   end
   
   it "executes javascript" do
-    @browser.load_html(%{
+    @browser.load_html(
+      (<<-HTML)
       <html>
         <body>
         	hello <div id="the_spot"></div>
@@ -44,7 +47,8 @@ describe Schnauzer do
         	</script>
         </body>
       </html>
-    })
+      HTML
+    )
     
     @browser.js("document.body.innerHTML") \
       .should include(%{hello <div id="the_spot">world</div>})
@@ -60,7 +64,8 @@ describe Schnauzer do
     time = 
       Benchmark.realtime {
         n.times do
-          @browser.load_html(%{
+          @browser.load_html(
+            (<<-HTML)
             <html>
               <body>
               	hello <div id="the_spot"></div>
@@ -70,7 +75,8 @@ describe Schnauzer do
               	</script>
               </body>
             </html>
-          })
+            HTML
+          )
         end
       }
     puts "basic html load: #{n} requests in #{time}s  #{(time*1000)/n}ms/r  #{n.to_f/time.to_f}r/s"
