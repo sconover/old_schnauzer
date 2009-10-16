@@ -1,7 +1,7 @@
 require "rubygems"
 require "lib/schnauzer"
 require "benchmark"
-require "spec"
+require "test/spec"
 
 describe Schnauzer do
   before do
@@ -19,7 +19,7 @@ describe Schnauzer do
       HTML
     )
 
-    @browser.js("document.body.innerHTML").should include("<i>hello world</i>")
+    @browser.js("document.body.innerHTML").should.include("<i>hello world</i>")
   end
   
   it "uses base url provided to make absolute urls" do
@@ -32,7 +32,7 @@ describe Schnauzer do
       "http://bar")
     
     
-    @browser.js("document.getElementById('mylink').href").should == "http://bar/mypage.html"
+    @browser.js("document.getElementById('mylink').href").should.equal "http://bar/mypage.html"
   end
   
   it "executes javascript" do
@@ -51,12 +51,12 @@ describe Schnauzer do
     )
     
     @browser.js("document.body.innerHTML") \
-      .should include(%{hello <div id="the_spot">world</div>})
+      .should.include(%{hello <div id="the_spot">world</div>})
   end
   
   it "load from url" do
     @browser.load_url("file://#{File.expand_path("spec/little_page.html")}")
-    @browser.js("document.body.innerHTML").should include(%{hello <div id="foo">world</div>})
+    @browser.js("document.body.innerHTML").should.include(%{hello <div id="foo">world</div>})
   end
   
   it "performance" do

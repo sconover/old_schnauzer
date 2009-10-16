@@ -1,6 +1,7 @@
 require 'osx/cocoa'
 require 'lib/cocoa_utils'
 require "lib/local_protocol"
+require "lib/log_decorator"
 
 
 OSX.require_framework 'WebKit'
@@ -76,7 +77,12 @@ class Schnauzer
   end
 end
 
-
+class Object
+  def log_calls(to=$stdout)
+    LogDecorator.new(to).apply_to(self)
+    self
+  end
+end
 
 class WebResourceLoadDelegate < OSX::NSObject
   
@@ -94,7 +100,7 @@ class WebResourceLoadDelegate < OSX::NSObject
   
   def webView_resource_willSendRequest_redirectResponse_fromDataSource(v, resource, request, response, source)
     # puts "webView_resource_willSendRequest_redirectResponse_fromDataSource #{request.URL.to_s}"
-
+# p request.HTTPBody
     request_headers = request.allHTTPHeaderFields.to_hash
     if request_headers.values.collect{|v|v.to_s}.include?("XMLHttpRequest")
       @unresolved_ajax_request = true
@@ -135,8 +141,6 @@ class WebResourceLoadDelegate < OSX::NSObject
   def webView_resource_didCancelAuthenticationChallenge_fromDataSource(v, resource, challenge, source)
     # p 9
   end
-  
-
 end
 
 class WebFrameLoadDelegate < OSX::NSObject
@@ -152,9 +156,7 @@ class WebFrameLoadDelegate < OSX::NSObject
   def webView_didFailProvisionalLoadWithError_forFrame(webview, load_error, frame)
     OSX.CFRunLoopStop(OSX.CFRunLoopGetCurrent)
   end
-
-
-
+  
   def webView_didStartProvisionalLoadForFrame(v, frame)
   end
   

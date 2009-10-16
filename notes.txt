@@ -1,4 +1,36 @@
 
+Coming back to schnauzer
+
+- I have no idea what's going on in this objc binding code
+- Neither would anyone else
+- So the objective ought to be to make a nice objc binding/exploration toolkit
+  - dynamic adapter class that logs automatically?
+...
+- and then, copious documentation on what I find is happening
+
+
+Thoughts
+
+- bundler-ify?
+- MacRuby mode / adapter (vs MRI+rubycocoa)?
+  - recognize MacRuby, run tests in that context
+
+===========
+
+Getting this done is about 
+  1) understanding webkit bugs and working with the community to get them fixed
+  2) flexing the api and driving out memory leaks and such
+  3) documenting the esoteric parts of the code
+  4) webrat?
+
+
+No http daemons, no network traffic.  It's all in-process.
+Real browser
+Fast
+Simple/minimal api
+
+=============
+
 rack request/response
 	Schnauzer.new do |request, response|
 	  #handle the request, write to the response
@@ -17,3 +49,9 @@ assert failures
 
 
 need to dealloc.  lots of lurking memory issues.
+
+
+this project represents a lot of objc and cocoa webkit reverse engineering.  comment that stuff carefully.
+
+
+mode where js errors raise a ruby exception?

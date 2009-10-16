@@ -1,5 +1,5 @@
 require "rubygems"
-require "spec"
+require "test/spec"
 require "lib/cocoa_utils"
 require "lib/local_protocol"
 require "pp"

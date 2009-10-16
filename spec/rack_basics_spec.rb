@@ -1,6 +1,6 @@
 require "rubygems"
 require "lib/schnauzer"
-require "spec"
+require "test/spec"
 
 describe "schnauzer + sinatra app" do
   before(:all) do
@@ -23,7 +23,7 @@ describe "schnauzer + sinatra app" do
               end
     
     browser.load_url("local://host/foo")
-    browser.js("document.body.innerHTML").should include("this is a rack-compliant response.write")
+    browser.js("document.body.innerHTML").should.include("this is a rack-compliant response.write")
   end
   
     

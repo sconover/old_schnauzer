@@ -21,7 +21,7 @@ class LocalProtocol < OSX::NSURLProtocol
   
   def startLoading
     rack_response = CocoaToRackResponseAdapter.new(request, self)
-    
+
     @@block.call(
       CocoaToRackRequestAdapter.new(request), 
       rack_response
@@ -63,7 +63,7 @@ class CocoaToRackRequestAdapter < Rack::Request
     env["PATH_INFO"] ||= ns_url_request.URL.path.to_s
     env["QUERY_STRING"] ||= ns_url_request.URL.query.to_s
     env["rack.url_scheme"] = ns_url_request.URL.scheme.to_s
-    
+
     super(env)
   end
   

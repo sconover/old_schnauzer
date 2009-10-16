@@ -1,7 +1,7 @@
 require "rubygems"
 require "lib/schnauzer"
 require "benchmark"
-require "spec"
+require "test/spec"
 
 describe Schnauzer do
   it "loads urls my way" do
@@ -19,7 +19,7 @@ describe Schnauzer do
     
     browser.load_url("local://host/custom/page")
     
-    browser.js("document.body.innerHTML").should include("<i>hello /custom/page</i>")
+    browser.js("document.body.innerHTML").should.include("<i>hello /custom/page</i>")
   end
 
   it "url references within documents get loaded my way too" do
@@ -55,13 +55,13 @@ describe Schnauzer do
     
     browser.load_url("local://host/main/page")
     
-    browser.js("document.body.innerHTML").should include("<i>hello /main/page</i>")
-    browser.js("document.body.innerHTML").should include("<div id=\"spot\">john jay</div>")
+    browser.js("document.body.innerHTML").should.include("<i>hello /main/page</i>")
+    browser.js("document.body.innerHTML").should.include("<div id=\"spot\">john jay</div>")
     browser.js("window.getComputedStyle(document.body, null).marginLeft").should == "23px"
   end
 
     
-  it "performance" do
+  xit "performance" do
     browser = Schnauzer.new do |request, response|
       (<<-HTML)
         <html>
